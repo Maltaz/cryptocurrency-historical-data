@@ -18,8 +18,8 @@ class FetchCryptoCurrencyData:
     def __init__(self):
 
         # CONSTANS
-        self.api_key = 'Your Api Key'
-        self.api_secret = 'Your Api Secret'
+        self.api_key = 'your_api_key'
+        self.api_secret = 'your_api_secret'
         self.bin_sizes = {"1m": 1, "5m": 5, "1h": 60, "1d": 1440}
         self.batch_size = 750
 
@@ -31,7 +31,7 @@ class FetchCryptoCurrencyData:
         self.wallet_crypto_change24: Optional[List[dict]] = []
 
     def main(self) -> bool:
-        #TODO Refactor code to more "automation" style 
+        #TODO Refactor code to more "automation" style
         if not self.initialize_binance():
             print("Failed to initialize binance client")
         else:
@@ -60,7 +60,7 @@ class FetchCryptoCurrencyData:
         if len(data) > 0:
             old = parser.parse(data["timestamp"].iloc[-1])
         elif source == "binance":
-            old = datetime.strptime('1 Aug 2022', '%d %b %Y')
+            old = datetime.strptime('1 Dec 2020', '%d %b %Y')
         if source == "binance":
             new = pd.to_datetime(self.binance_client.get_klines(symbol=currency_symbol, interval=kline_size)[-1][0],
                                  unit='ms')
@@ -93,8 +93,11 @@ class FetchCryptoCurrencyData:
                                                            oldest_point.strftime("%d %b %Y %H:%M:%S"),
                                                            newest_point.strftime("%d %b %Y %H:%M:%S"))
         data = pd.DataFrame(klines,
-                            columns=['timestamp', 'open', 'high', 'low', 'close', 'volume', 'close_time', 'quote_av',
-                                     'trades', 'tb_base_av', 'tb_quote_av', 'ignore'])
+                            columns=['timestamp', 'open', 'high', 'low', 'close', 'ignore', 'ignore', 'ignore',
+                                     'ignore', 'ignore', 'ignore', 'ignore'])
+        #data = pd.DataFrame(klines,
+        #                    columns=['timestamp', 'open', 'high', 'low', 'close', 'volume', 'close_time', 'quote_av',
+        #                             'trades', 'tb_base_av', 'tb_quote_av', 'ignore'])
         data['timestamp'] = pd.to_datetime(data['timestamp'], unit='ms')
 
         if len(data_df) > 0:
@@ -114,4 +117,4 @@ class FetchCryptoCurrencyData:
 
 test = FetchCryptoCurrencyData()
 test.initialize_binance()
-test.get_historical_data("BTCUSDT", "5m", True)
+test.get_historical_data("BTCUSDT", "1d", True)
